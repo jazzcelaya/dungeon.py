@@ -11,8 +11,16 @@ def get_locations():
   return monster, door, player
 
 def move_player(player, move):
-
-  return player # (location)
+  x, y = player
+  if move == "IZQUIERDA":
+    x -= 1
+  if move == "DERECHA":
+    x += 1
+  if move == "ARRIBA":
+    y -= 1
+  if move == "ABAJO":
+    y += 1
+  return x, y # (location)
 
 def get_moves(player):
   moves= ["ARRIBA","ABAJO", "IZQUIERDA", "DERECHA"]
@@ -48,9 +56,11 @@ CELLS = grid_generator(grid_size)
 monster, player, door = get_locations()
 
 while True:
+  valid_moves = get_moves(player)
+  clear_screen()
   print("Bienvenido al Calabozo!")
   print("Estás en la mazmorra número {}".format(player)) #format to players position
-  print("Puedes moverte a la {}".format(", ".join(get_moves(player)))) #format with available moves
+  print("Puedes moverte a la {}".format(", ".join(valid_moves))) #format with available moves
   print("<<<<<pulsa Q para salir>>>>>")
 
   move = input("> ")
@@ -58,3 +68,10 @@ while True:
 
   if move == "QUIT":
     break
+
+  if move in valid_moves:
+    player = move_player(player, move)
+  else:
+    print("\n ¡Las paredes son duras, ouch! \n ")
+    continue
+
