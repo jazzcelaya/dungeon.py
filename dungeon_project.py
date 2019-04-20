@@ -49,9 +49,19 @@ def get_locations():
   return random.sample(CELLS, 3)
   return monster, door, player
 
-def random_monster():
-  monster= random.sample(CELLS, 1)
-  return monster
+def random_monster(monster):
+  moves = get_moves(monster)
+  move = random.choice(moves)
+  x, y = monster
+  if move == "IZQUIERDA":
+      x -= 1
+  if move == "DERECHA":
+      x += 1
+  if move == "ARRIBA":
+      y -= 1
+  if move == "ABAJO":
+      y += 1
+  return x,y
 
 
 def move_player(player, move):
@@ -66,9 +76,9 @@ def move_player(player, move):
     y += 1
   return x, y # (location)
 
-def get_moves(player):
+def get_moves(character):
   moves= ["ARRIBA","ABAJO", "IZQUIERDA", "DERECHA"]
-  x, y = player
+  x, y = character
   if x == 0:
     moves.remove("IZQUIERDA")
   if x == grid_size-1:
@@ -102,8 +112,8 @@ def game_loop():
 
     if move in valid_moves:
       player = move_player(player, move)
+      monster = random_monster(monster)
       draw_map(monster, player, door)
-      random_monster()
 
       if player == monster:
         clear_screen()
