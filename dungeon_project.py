@@ -72,8 +72,10 @@ def get_moves(player):
 def game_loop():
   # getting random locations
   monster, player, door = get_locations()
+  playing = True
 
-  while True:
+  while playing:
+    clear_screen()
     draw_map(player)
     valid_moves = get_moves(player)
     print("Estás en la mazmorra número {}".format(player)) #format to players position
@@ -83,24 +85,36 @@ def game_loop():
     move = move.upper()
 
     if move == "SALIR":
+      print("****** Adiós, vaquero u_U ******* ")
       break
 
     if move in valid_moves:
       player = move_player(player, move)
-      clear_screen()
+
+      if player == monster:
+        print("Te ha comido el monstruo")
+        playing = False
+      if player == door:
+        print("Felicidades, has escapado del calabozo")
+        playing = False
+
     else:
       print("\n ¡Las paredes son duras, ouch! \n ")
       input("pulsa ENTER para continuar")
       clear_screen()
       continue
 
+  else:
+
+    if input("Quieres jugar de nuevo? Sí / No ").lower() != "no":
+      game_loop()
+
 
 clear_screen()
 print("Bienvenido al Calabozo!")
-input("Presiona ENTER para comenzar")
+grid_size = int(input("¿De cuántas filas quieres la mazmorra? "))
 clear_screen()
 #save number of cells in variable
-grid_size = int(input("¿De cuántas filas quieres la mazmorra? "))
 clear_screen()
 #call grid_generator and assign its result to CELLS,
 CELLS = grid_generator(grid_size)
