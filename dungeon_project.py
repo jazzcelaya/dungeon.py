@@ -12,7 +12,7 @@ def grid_generator(number):
   return grid
 
 
-def draw_map(player):
+def draw_map(monster, player, door):
   print(" _" * grid_size)
   tile = "|{}"
 
@@ -20,14 +20,22 @@ def draw_map(player):
     x,  y = cell
     if x < grid_size-1:
       line_end = ""
-      if cell == player:
+      if cell == monster:
         output = tile.format("X")
+      elif cell == player:
+        output = tile.format("%")
+      elif cell == door:
+        output = tile.format("旦")
       else:
         output = tile.format("_")
     else:
       line_end = "\n"
-      if cell == player:
+      if cell == monster:
         output = tile.format("X|")
+      elif cell == player:
+        output = tile.format("%|")
+      elif cell == door:
+        output = tile.format("旦|")
       else:
         output = tile.format("_|")
 
@@ -39,8 +47,12 @@ def clear_screen():
 
 def get_locations():
   return random.sample(CELLS, 3)
-
   return monster, door, player
+
+def random_monster():
+  monster= random.sample(CELLS, 1)
+  return monster
+
 
 def move_player(player, move):
   x, y = player
@@ -76,7 +88,7 @@ def game_loop():
 
   while playing:
     clear_screen()
-    draw_map(player)
+    draw_map(player, monster, door)
     valid_moves = get_moves(player)
     print("Estás en la mazmorra número {}".format(player)) #format to players position
     print("Puedes moverte hacia {}".format(", ".join(valid_moves))) #format with available moves
@@ -85,16 +97,20 @@ def game_loop():
     move = move.upper()
 
     if move == "SALIR":
-      print("****** Adiós, vaquero u_U ******* ")
+      print("****** Adiós, u_U ******* ")
       break
 
     if move in valid_moves:
       player = move_player(player, move)
+      draw_map(monster, player, door)
+      random_monster()
 
       if player == monster:
+        clear_screen()
         print("Te ha comido el monstruo")
         playing = False
       if player == door:
+        clear_screen()
         print("Felicidades, has escapado del calabozo")
         playing = False
 
