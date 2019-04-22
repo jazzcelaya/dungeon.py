@@ -7,12 +7,18 @@ def grid_generator(number):
   for i in range(number):
     for x in range(number):
       grid.append((x,i))
-
-  #print(grid)
   return grid
 
+players_path = []
 
-def draw_map(monster, player, door):
+def ask_debug():
+  debug_question = input("¿Quieres acceder al modo DEBUG? Sí/ No   ")
+  if debug_question.lower() == "si":
+    debug = True
+  else:
+    debug = False
+
+def draw_map(monster, player, door,players_path, debug):
   print(" _" * grid_size)
   tile = "|{}"
 
@@ -25,7 +31,12 @@ def draw_map(monster, player, door):
       elif cell == player:
         output = tile.format("%")
       elif cell == door:
-        output = tile.format("旦")
+        if debug == True:
+          output = tile.format("旦")
+        else:
+          output = tile.format("_")
+      elif cell in players_path:
+        output = tile.format("*")
       else:
         output = tile.format("_")
     else:
@@ -94,11 +105,12 @@ def get_moves(character):
 def game_loop():
   # getting random locations
   monster, player, door = get_locations()
+  players_path.append(player)
   playing = True
 
   while playing:
     clear_screen()
-    draw_map(player, monster, door)
+    draw_map(player, monster, door, players_path,debug)
     valid_moves = get_moves(player)
     print("Estás en la mazmorra número {}".format(player)) #format to players position
     print("Puedes moverte hacia {}".format(", ".join(valid_moves))) #format with available moves
@@ -112,8 +124,9 @@ def game_loop():
 
     if move in valid_moves:
       player = move_player(player, move)
+      players_path.append(player)
       monster = random_monster(monster)
-      draw_map(monster, player, door)
+      draw_map(monster, player, door, players_path,debug)
 
       if player == monster:
         clear_screen()
@@ -140,7 +153,7 @@ clear_screen()
 print("Bienvenido al Calabozo!")
 grid_size = int(input("¿De cuántas filas quieres la mazmorra? "))
 clear_screen()
-#save number of cells in variable
+debug = ask_debug()
 clear_screen()
 #call grid_generator and assign its result to CELLS,
 CELLS = grid_generator(grid_size)
