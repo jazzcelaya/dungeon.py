@@ -14,11 +14,13 @@ players_path = []
 def ask_debug():
   debug_question = input("¿Quieres acceder al modo DEBUG? Sí/ No   ")
   if debug_question.lower() == "si":
-    debug = True
+    DEBUG = True
   else:
-    debug = False
+    DEBUG = False
+  print(DEBUG)
+  input("PRESS ENTER")
 
-def draw_map(monster, player, door,players_path, debug):
+def draw_map(monster, player, door,players_path):
   print(" _" * grid_size)
   tile = "|{}"
 
@@ -30,11 +32,6 @@ def draw_map(monster, player, door,players_path, debug):
         output = tile.format("X")
       elif cell == player:
         output = tile.format("%")
-      elif cell == door:
-        if debug == True:
-          output = tile.format("旦")
-        else:
-          output = tile.format("_")
       elif cell in players_path:
         output = tile.format("*")
       else:
@@ -45,8 +42,6 @@ def draw_map(monster, player, door,players_path, debug):
         output = tile.format("X|")
       elif cell == player:
         output = tile.format("%|")
-      elif cell == door:
-        output = tile.format("旦|")
       else:
         output = tile.format("_|")
 
@@ -110,9 +105,12 @@ def game_loop():
 
   while playing:
     clear_screen()
-    draw_map(player, monster, door, players_path,debug)
+    draw_map(player, monster, door, players_path)
     valid_moves = get_moves(player)
     print("Estás en la mazmorra número {}".format(player)) #format to players position
+    if DEBUG == True:
+      print("*******DEBUG*******")
+      print("La puerta está en la casilla {}".format(door))
     print("Puedes moverte hacia {}".format(", ".join(valid_moves))) #format with available moves
     print("<<<<<escribe SALIR para salir>>>>>")
     move = input("> ")
@@ -126,7 +124,7 @@ def game_loop():
       player = move_player(player, move)
       players_path.append(player)
       monster = random_monster(monster)
-      draw_map(monster, player, door, players_path,debug)
+      draw_map(monster, player, door, players_path)
 
       if player == monster:
         clear_screen()
@@ -138,7 +136,7 @@ def game_loop():
         playing = False
 
     else:
-      print("\n ¡Las paredes son duras, ouch! \n ")
+      print("\n ¡Las paredes son duras, ten cuidado! \n ")
       input("pulsa ENTER para continuar")
       clear_screen()
       continue
@@ -153,7 +151,7 @@ clear_screen()
 print("Bienvenido al Calabozo!")
 grid_size = int(input("¿De cuántas filas quieres la mazmorra? "))
 clear_screen()
-debug = ask_debug()
+DEBUG = ask_debug()
 clear_screen()
 #call grid_generator and assign its result to CELLS,
 CELLS = grid_generator(grid_size)
